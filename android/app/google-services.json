@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "194165936582",
+    "firebase_url": "https://gotaxi-b26f6-default-rtdb.firebaseio.com",
+    "project_id": "gotaxi-b26f6",
+    "storage_bucket": "gotaxi-b26f6.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:194165936582:android:4e2fd5dbd5c1947c9062c7",
+        "android_client_info": {
+          "package_name": "com.iviberberi.cab_rider"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "194165936582-sa7onj2j0ev6aqsip29pt2d2tbcl5igf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBaIAVDQIxwkbGyaOVUC1-SzE8s1Vd-F_w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "194165936582-sa7onj2j0ev6aqsip29pt2d2tbcl5igf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

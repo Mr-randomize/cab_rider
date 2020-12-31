@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>194165936582-8vho80egjc1m0pm95kh7ar6p9m83ev6n.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.194165936582-8vho80egjc1m0pm95kh7ar6p9m83ev6n</string>
+	<key>API_KEY</key>
+	<string>AIzaSyD8D7HLFG3S6df5ybcQYk4ofFBrtKhSriA</string>
+	<key>GCM_SENDER_ID</key>
+	<string>194165936582</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.iviberberi.cabRider</string>
+	<key>PROJECT_ID</key>
+	<string>gotaxi-b26f6</string>
+	<key>STORAGE_BUCKET</key>
+	<string>gotaxi-b26f6.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:194165936582:ios:ffade47a8dba433c9062c7</string>
+	<key>DATABASE_URL</key>
+	<string>https://gotaxi-b26f6-default-rtdb.firebaseio.com</string>
+</dict>
+</plist>
