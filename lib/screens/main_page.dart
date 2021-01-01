@@ -33,6 +33,8 @@ class _MainPageState extends State<MainPage> {
 
   List<LatLng> polylineCoordinates = [];
   Set<Polyline> _polylines = {};
+  Set<Marker> _markers = {};
+  Set<Circle> _circles = {};
 
   void setupPositionLocator() async {
     currentPosition = await Geolocator.getCurrentPosition(
@@ -114,6 +116,44 @@ class _MainPageState extends State<MainPage> {
       bounds = LatLngBounds(southwest: pickLatLng, northeast: destLatLng);
     }
     mapController.animateCamera(CameraUpdate.newLatLngBounds(bounds, 70));
+
+    //Add markers and circles
+    Marker pickupMarker = Marker(
+      markerId: MarkerId('pickup'),
+      position: pickLatLng,
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+      infoWindow: InfoWindow(title: pickup.placeName, snippet: 'My Location'),
+    );
+    Marker destinationMarker = Marker(
+      markerId: MarkerId('destination'),
+      position: destLatLng,
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+      infoWindow:
+          InfoWindow(title: destination.placeName, snippet: 'Destination'),
+    );
+
+    Circle pickupCircle = Circle(
+      circleId: CircleId('pickup'),
+      strokeColor: Colors.green,
+      strokeWidth: 3,
+      radius: 12,
+      center: pickLatLng,
+      fillColor: BrandColors.colorGreen,
+    );
+    Circle destinationCircle = Circle(
+      circleId: CircleId('destination'),
+      strokeColor: BrandColors.colorAccentPurple,
+      strokeWidth: 3,
+      radius: 12,
+      center: destLatLng,
+      fillColor: BrandColors.colorAccentPurple,
+    );
+    setState(() {
+      _markers.add(pickupMarker);
+      _markers.add(destinationMarker);
+      _circles.add(pickupCircle);
+      _circles.add(destinationCircle);
+    });
   }
 
   @override
@@ -195,6 +235,8 @@ class _MainPageState extends State<MainPage> {
             zoomControlsEnabled: true,
             initialCameraPosition: _kGooglePlex,
             polylines: _polylines,
+            markers: _markers,
+            circles: _circles,
             onMapCreated: (GoogleMapController controller) {
               _controller.complete(controller);
               mapController = controller;
