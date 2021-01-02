@@ -1,9 +1,12 @@
 import 'package:cab_rider/data_models/address.dart';
 import 'package:cab_rider/data_models/direction_details.dart';
+import 'package:cab_rider/data_models/user.dart';
 import 'package:cab_rider/data_provider/app_data.dart';
 import 'package:cab_rider/globalvariable.dart';
 import 'package:cab_rider/helpers/request_helper.dart';
 import 'package:connectivity/connectivity.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
@@ -55,5 +58,25 @@ class HelperMethods {
         response['routes'][0]['overview_polyline']['points'];
 
     return directionDetails;
+  }
+
+  static int estimateFares(DirectionDetails details) {
+    double baseFare = 3.0;
+    double distanceFare = (details.distanceValue / 1000) * 0.5;
+    double timeFare = (details.durationValue / 60) * 0.5;
+    double totalFare = baseFare + distanceFare + timeFare;
+    return totalFare.truncate();
+  }
+
+  static void getCurrentUserInfo() async {
+    currentUser = await FirebaseAuth.instance.currentUser();
+    String userId = currentUser.uid;
+    DatabaseReference userRef =
+        FirebaseDatabase.instance.reference().child('users/$userId');
+    userRef.once().then((DataSnapshot snapshot) {
+      if (snapshot.value != null) {
+        currentUserInfo = User.fromSnapshot(snapshot);
+      }
+    });
   }
 }

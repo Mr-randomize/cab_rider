@@ -32,13 +32,12 @@ class PredictionTile extends StatelessWidget {
       Address thisPlace = Address();
       thisPlace.placeId = placeID;
       thisPlace.placeName = response['result']['name'];
-      thisPlace.latitude =
-          response['result']['geometry']['location']['latitude'];
-      thisPlace.longitude =
-          response['result']['geometry']['location']['longitude'];
+      thisPlace.latitude = response['result']['geometry']['location']['lat'];
+      thisPlace.longitude = response['result']['geometry']['location']['lng'];
       thisPlace.placeFormattedAddress = response['result']['formatted_address'];
       Provider.of<AppData>(context, listen: false)
           .updateDestinationAddress(thisPlace);
+      print(thisPlace);
       Navigator.pop(context, 'getDirection');
     }
   }
