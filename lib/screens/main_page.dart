@@ -600,7 +600,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
                         child: TaxiOutlineButton(
                           title: 'REQUEST CAB',
                           color: BrandColors.colorGreen,
-                          onPressed: () => showDetailSheet(),
+                          onPressed: () => showRequestingSheet(),
                         ),
                       )
                     ],
