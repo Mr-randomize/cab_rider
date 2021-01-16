@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cab_rider/data_models/address.dart';
 import 'package:cab_rider/data_models/direction_details.dart';
 import 'package:cab_rider/data_models/user.dart';
@@ -78,5 +80,11 @@ class HelperMethods {
         currentUserInfo = User.fromSnapshot(snapshot);
       }
     });
+  }
+
+  static double generateRandomNumber(int max) {
+    var randomGenerator = Random();
+    int randInt = randomGenerator.nextInt(max);
+    return randInt.toDouble();
   }
 }

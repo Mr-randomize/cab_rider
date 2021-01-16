@@ -4,8 +4,10 @@ import 'dart:io';
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:cab_rider/brand_colors.dart';
 import 'package:cab_rider/data_models/direction_details.dart';
+import 'package:cab_rider/data_models/nearby_driver.dart';
 import 'package:cab_rider/data_provider/app_data.dart';
 import 'package:cab_rider/globalvariable.dart';
+import 'package:cab_rider/helpers/fire_helper.dart';
 import 'package:cab_rider/helpers/helper_methods.dart';
 import 'package:cab_rider/screens/search_page.dart';
 import 'package:cab_rider/styles/styles.dart';
@@ -15,6 +17,7 @@ import 'package:cab_rider/widgets/progress_dialog.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_geofire/flutter_geofire.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocator/geolocator.dart';
@@ -48,6 +51,23 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
   Set<Marker> _markers = {};
   Set<Circle> _circles = {};
 
+  BitmapDescriptor nearbyIcon;
+
+  bool nearbyDriversKeysLoaded = false;
+
+  void createMarker() {
+    if (nearbyIcon == null) {
+      ImageConfiguration imageConfiguration =
+          createLocalImageConfiguration(context, size: Size(2, 2));
+      BitmapDescriptor.fromAssetImage(
+              imageConfiguration,
+              (Platform.isIOS)
+                  ? 'images/car_ios.png'
+                  : 'images/car_android.png')
+          .then((icon) => nearbyIcon = icon);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -63,7 +83,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
     mapController.animateCamera(CameraUpdate.newCameraPosition(cp));
     String address =
         await HelperMethods.findCoordinateAddress(currentPosition, context);
-    print(address);
+    startGeoFireListener();
   }
 
   Future<void> getDirection() async {
@@ -173,6 +193,73 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
     });
   }
 
+  void startGeoFireListener() {
+    Geofire.initialize('driversAvailable');
+    Geofire.queryAtLocation(
+            currentPosition.latitude, currentPosition.longitude, 10)
+        .listen((map) {
+      print(map);
+      if (map != null) {
+        var callBack = map['callBack'];
+
+        switch (callBack) {
+          case Geofire.onKeyEntered:
+            NearbyDriver nearbyDriver = NearbyDriver();
+            nearbyDriver.key = map['key'];
+            nearbyDriver.latitude = map['latitude'];
+            nearbyDriver.longitude = map['longitude'];
+            FireHelper.nearbyDriverList.add(nearbyDriver);
+            if (nearbyDriversKeysLoaded) {
+              updateDriversOnMap();
+            }
+            break;
+
+          case Geofire.onKeyExited:
+            FireHelper.removeFromList(map['key']);
+            updateDriversOnMap();
+            break;
+
+          case Geofire.onKeyMoved:
+            NearbyDriver nearbyDriver = NearbyDriver();
+            nearbyDriver.key = map['key'];
+            nearbyDriver.latitude = map['latitude'];
+            nearbyDriver.longitude = map['longitude'];
+            FireHelper.updateNearbyLocation(nearbyDriver);
+            updateDriversOnMap();
+            break;
+
+          case Geofire.onGeoQueryReady:
+            print(map['result']);
+            nearbyDriversKeysLoaded = true;
+            updateDriversOnMap();
+            break;
+        }
+      }
+    });
+  }
+
+  void updateDriversOnMap() {
+    setState(() {
+      _markers.clear();
+    });
+    Set<Marker> tempMarkers = Set<Marker>();
+    for (NearbyDriver driver in FireHelper.nearbyDriverList) {
+      LatLng driverPosition = LatLng(driver.latitude, driver.longitude);
+
+      Marker thisMarker = Marker(
+        markerId: MarkerId('driver${driver.key}'),
+        position: driverPosition,
+        icon: nearbyIcon,
+        rotation: HelperMethods.generateRandomNumber(360),
+      );
+
+      tempMarkers.add(thisMarker);
+    }
+    setState(() {
+      _markers = tempMarkers;
+    });
+  }
+
   void showDetailSheet() async {
     await getDirection();
     setState(() {
@@ -244,6 +331,7 @@ class _MainPageState extends State<MainPage> with TickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    createMarker();
     return Scaffold(
       key: scaffoldKey,
       drawer: Container(
